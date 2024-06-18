@@ -1,0 +1,38 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Data</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    #data { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Real-time Sensor Data</h1>
+  <div id="data"></div>
+  
+  <script>
+    const socket = io();
+    const dataDiv = document.getElementById('data');
+
+    socket.on('initialData', (data) => {
+      dataDiv.innerHTML = '';
+      data.forEach(item => {
+        const p = document.createElement('p');
+        p.textContent = JSON.stringify(item);
+        dataDiv.appendChild(p);
+      });
+    });
+
+    socket.on('sensorData', (data) => {
+      const p = document.createElement('p');
+      p.textContent = JSON.stringify(data);
+      dataDiv.appendChild(p);
+    });
+  </script>
+</body>
+</html>
