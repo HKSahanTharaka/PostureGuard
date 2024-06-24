@@ -1,37 +1,37 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sensor Data</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; }
-    #data { margin-top: 20px; }
-  </style>
+  <title>ESP32 Data</title>
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 </head>
 <body>
-  <h1>Real-time Sensor Data</h1>
-  <div id="data"></div>
+  <h1>ESP32 Data</h1>
   
+  <h2>Board 1 Data</h2>
+  <div id="board1Data"></div>
+  
+  <h2>Board 2 Data</h2>
+  <div id="board2Data"></div>
+
   <script>
     const socket = io();
-    const dataDiv = document.getElementById('data');
 
-    socket.on('initialData', (data) => {
-      dataDiv.innerHTML = '';
-      data.forEach(item => {
-        const p = document.createElement('p');
-        p.textContent = JSON.stringify(item);
-        dataDiv.appendChild(p);
-      });
+    socket.on('sensorData1', (data) => {
+      console.log('Received data from Board 1:', data); // Debug: print received data
+      document.getElementById('board1Data').innerHTML = `
+        <p>Heart Rate: ${data.heartRate}</p>
+        <p>Flex Sensor 1: ${data.flexSensor1}</p>
+        <p>Flex Sensor 2: ${data.flexSensor2}</p>
+      `;
     });
 
-    socket.on('sensorData', (data) => {
-      const p = document.createElement('p');
-      p.textContent = JSON.stringify(data);
-      dataDiv.appendChild(p);
+    socket.on('sensorData2', (data) => {
+      console.log('Received data from Board 2:', data); // Debug: print received data
+      document.getElementById('board2Data').innerHTML = `
+        <p>Left Mat Weight: ${data.leftMatWeight} kg</p>
+        <p>Right Mat Weight: ${data.rightMatWeight} kg</p>
+      `;
     });
   </script>
 </body>
