@@ -5,6 +5,33 @@
   <title>ESP32 Data</title>
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    #centerOfGravityContainer {
+      position: relative;
+      width: 80%;
+      height: 20px;
+      background-color: #f0f0f0;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+    }
+    #blackLine {
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      background-color: black;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+    }
+    #redLine {
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      background-color: red;
+      transition: left 0.5s ease;
+      width: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>ESP32 Data</h1>
@@ -14,6 +41,14 @@
   
   <h2>Board 2 Data</h2>
   <div id="board2Data"></div>
+
+  <h2>Center of Gravity</h2>
+  <div id="centerOfGravityContainer">
+    <div id="blackLine"></div>
+    <div id="redLine"></div>
+  </div>
+  <p>⚫ - Correct Centre of Gravity</p>
+  <p>🔴 - Current Centre of Gravity</p>
 
   <h2>Board 1 Configuration</h2>
   <div>
@@ -61,6 +96,19 @@
         <p>Load Cell 7: ${data.loadCellPercentages[6]}%</p>
         <p>Load Cell 8: ${data.loadCellPercentages[7]}%</p>
       `;
+
+      // Calculate the position of the red line
+      const totalWeight = data.leftMatWeight + data.rightMatWeight;
+      const leftPercentage = (data.leftMatWeight / totalWeight) * 100;
+      const rightPercentage = (data.rightMatWeight / totalWeight) * 100;
+
+      // Set the position of the red line
+      const redLine = document.getElementById('redLine');
+      if (totalWeight !== 0) {
+        redLine.style.left = `calc(${rightPercentage}% - 1px)`; // Corrected: move to left if left mat has more weight
+      } else {
+        redLine.style.left = '50%'; // Center it if there is no weight
+      }
     });
 
     // Fetch initial configuration for Board 1
