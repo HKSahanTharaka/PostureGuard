@@ -3,171 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <title>ESP32 Data</title>
-  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    #centerOfGravityContainer {
-      position: relative;
-      width: 80%;
-      height: 20px;
-      background-color: #f0f0f0;
-      margin: 20px auto;
-      border: 1px solid #ccc;
-    }
-    #blackLine {
-      position: absolute;
-      width: 2px;
-      height: 100%;
-      background-color: black;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-    }
-    #redLine {
-      position: absolute;
-      width: 2px;
-      height: 100%;
-      background-color: red;
-      transition: left 0.5s ease;
-      width: 10px;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>ESP32 Data</h1>
-  
-  <h2>Board 1 Data</h2>
-  <div id="board1Data"></div>
-  
-  <h2>Board 2 Data</h2>
-  <div id="board2Data"></div>
+  <div class="container">
+    <h1>ESP32 Data</h1>
+    
+    <h2>Board 1 Data</h2>
+    <div class="flex-container">
+      <div class="flex-item">
+        <h3>Heart Rate</h3>
+        <div id="heartRateData"></div>
+      </div>
+      <div class="flex-item">
+        <h3>Flex Sensor 1 & 2</h3>
+        <div id="flexSensorData"></div>
+      </div>
+    </div>
 
-  <h2>Center of Gravity</h2>
-  <div id="centerOfGravityContainer">
-    <div id="blackLine"></div>
-    <div id="redLine"></div>
+    <h2>Board 2 Data</h2>
+    <div class="flex-container">
+      <div class="flex-item">
+        <h3>Left Mat</h3>
+        <div id="leftMatData"></div>
+      </div>
+      <div class="flex-item">
+        <h3>Right Mat</h3>
+        <div id="rightMatData"></div>
+      </div>
+    </div>
+
+    <h2>Center of Gravity</h2>
+    <div id="centerOfGravityContainer">
+      <div id="blackLine"></div>
+      <div id="redLine"></div>
+    </div>
+    <p style="text-align: center; color: #ffffff;">⚫ - Correct Centre of Gravity</p>
+    <p style="text-align: center; color: #ff4444;">🔴 - Current Centre of Gravity</p>
+
+    <h2 style="text-align: center; color: #ffffff;">Board 1 Configuration</h2>
+    <div style="text-align: center;">
+      <label>Flex Range 1 Min: <input type="number" id="flexRange1Min" /></label><br>
+      <label>Flex Range 1 Max: <input type="number" id="flexRange1Max" /></label><br>
+      <label>Flex Range 2 Min: <input type="number" id="flexRange2Min" /></label><br>
+      <label>Flex Range 2 Max: <input type="number" id="flexRange2Max" /></label><br>
+      <button id="updateBoard1ConfigBtn">Update</button>
+    </div>
+
+    <h2 style="text-align: center; color: #ffffff;">Board 2 Configuration</h2>
+    <div style="text-align: center;">
+      <label>Weight Difference Threshold: <input type="number" id="weightDifferenceThreshold" step="0.1" /></label><br>
+      <button id="updateBoard2ConfigBtn">Update</button>
+    </div>
   </div>
-  <p>⚫ - Correct Centre of Gravity</p>
-  <p>🔴 - Current Centre of Gravity</p>
 
-  <h2>Board 1 Configuration</h2>
-  <div>
-    <label>Flex Range 1 Min: <input type="number" id="flexRange1Min" /></label>
-    <label>Flex Range 1 Max: <input type="number" id="flexRange1Max" /></label>
-    <br><br>
-    <label>Flex Range 2 Min: <input type="number" id="flexRange2Min" /></label>
-    <label>Flex Range 2 Max: <input type="number" id="flexRange2Max" /></label>
-    <br><br>
-    <button onclick="updateBoard1Config()">Update Board 1 Config</button>
-  </div>
-
-  <h2>Board 2 Configuration</h2>
-  <div>
-    <label>Weight Difference Threshold: <input type="number" id="weightDifferenceThreshold" step="0.1" /></label>
-    <br><br>
-    <button onclick="updateBoard2Config()">Update Board 2 Config</button>
-  </div>
-
-  <script>
-    const socket = io();
-
-    socket.on('sensorData1', (data) => {
-      console.log('Received data from Board 1:', data);
-      document.getElementById('board1Data').innerHTML = `
-        <p>Heart Rate: ${data.heartRate}</p>
-        <p>Flex Sensor 1: ${data.flexSensor1}</p>
-        <p>Flex Sensor 2: ${data.flexSensor2}</p>
-      `;
-    });
-
-    socket.on('sensorData2', (data) => {
-      console.log('Received data from Board 2:', data);
-      document.getElementById('board2Data').innerHTML = `
-        <p>Left Mat Weight: ${data.leftMatWeight} kg</p>
-        <p>Right Mat Weight: ${data.rightMatWeight} kg</p>
-        <h3>Left Mat Load Cell Percentages</h3>
-        <p>Load Cell 1: ${data.loadCellPercentages[0]}%</p>
-        <p>Load Cell 2: ${data.loadCellPercentages[1]}%</p>
-        <p>Load Cell 3: ${data.loadCellPercentages[2]}%</p>
-        <p>Load Cell 4: ${data.loadCellPercentages[3]}%</p>
-        <h3>Right Mat Load Cell Percentages</h3>
-        <p>Load Cell 5: ${data.loadCellPercentages[4]}%</p>
-        <p>Load Cell 6: ${data.loadCellPercentages[5]}%</p>
-        <p>Load Cell 7: ${data.loadCellPercentages[6]}%</p>
-        <p>Load Cell 8: ${data.loadCellPercentages[7]}%</p>
-      `;
-
-      // Calculate the position of the red line
-      const totalWeight = data.leftMatWeight + data.rightMatWeight;
-      const leftPercentage = (data.leftMatWeight / totalWeight) * 100;
-      const rightPercentage = (data.rightMatWeight / totalWeight) * 100;
-
-      // Set the position of the red line
-      const redLine = document.getElementById('redLine');
-      if (totalWeight !== 0) {
-        redLine.style.left = `calc(${rightPercentage}% - 1px)`; // Corrected: move to left if left mat has more weight
-      } else {
-        redLine.style.left = '50%'; // Center it if there is no weight
-      }
-    });
-
-    // Fetch initial configuration for Board 1
-    fetch('/config1')
-      .then(response => response.json())
-      .then(config => {
-        document.getElementById('flexRange1Min').value = config.flexRange1Min;
-        document.getElementById('flexRange1Max').value = config.flexRange1Max;
-        document.getElementById('flexRange2Min').value = config.flexRange2Min;
-        document.getElementById('flexRange2Max').value = config.flexRange2Max;
-      });
-
-    // Fetch initial configuration for Board 2
-    fetch('/config2')
-      .then(response => response.json())
-      .then(config => {
-        document.getElementById('weightDifferenceThreshold').value = config.weightDifferenceThreshold;
-      });
-
-    // Function to update configuration for Board 1
-    function updateBoard1Config() {
-      const config = {
-        flexRange1Min: parseInt(document.getElementById('flexRange1Min').value),
-        flexRange1Max: parseInt(document.getElementById('flexRange1Max').value),
-        flexRange2Min: parseInt(document.getElementById('flexRange2Min').value),
-        flexRange2Max: parseInt(document.getElementById('flexRange2Max').value)
-      };
-
-      fetch('/config1', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(config)
-      }).then(() => {
-        alert('Board 1 Configuration Updated Successfully');
-      }).catch((error) => {
-        console.error('Error updating Board 1 configuration:', error);
-      });
-    }
-
-    // Function to update configuration for Board 2
-    function updateBoard2Config() {
-      const config = {
-        weightDifferenceThreshold: parseFloat(document.getElementById('weightDifferenceThreshold').value)
-      };
-
-      fetch('/config2', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(config)
-      }).then(() => {
-        alert('Board 2 Configuration Updated Successfully');
-      }).catch((error) => {
-        console.error('Error updating Board 2 configuration:', error);
-      });
-    }
-  </script>
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="scripts.js"></script>
 </body>
 </html>
