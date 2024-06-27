@@ -103,4 +103,3 @@ document.getElementById('updateBoard2ConfigBtn').addEventListener('click', () =>
     console.error('Error updating Board 2 configuration:', error);
   });
 });
-

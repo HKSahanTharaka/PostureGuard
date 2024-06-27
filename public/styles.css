@@ -122,4 +122,29 @@ button:hover {
   background-color: #45a049;
 }
 
-  
+.notable-btn {
+  display: block;
+  width: 180px;
+  padding: 12px;
+  margin: 20px auto;
+  border: none;
+  background-color: #ff4444;
+  color: white;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.notable-btn:hover {
+  background-color: #cc0000;
+}
+
+.image-container {
+  text-align: center;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
