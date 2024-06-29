@@ -26,7 +26,8 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#centerOfGravityContainer {
+#centerOfGravityContainer,
+#weightDistributionContainer {
   position: relative;
   width: 80%;
   height: 20px;
@@ -37,7 +38,7 @@ h2 {
   border: 1px solid #555555;
 }
 
-#blackLine, #redLine {
+#blackLine, #redLine, #weightDistributionMarker {
   position: absolute;
   height: 100%;
   top: 0;
@@ -50,7 +51,7 @@ h2 {
   transform: translateX(-50%);
 }
 
-#redLine {
+#redLine, #weightDistributionMarker {
   background-color: #ff4444;
   width: 10px;
   transition: left 0.5s ease;
@@ -147,4 +148,15 @@ button:hover {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+}
+
+.flash-red {
+  border: 2px solid red;
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0% { border-color: red; }
+  50% { border-color: transparent; }
+  100% { border-color: red; }
 }
