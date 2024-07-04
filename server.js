@@ -31,16 +31,16 @@ app.get('/', (req, res) => {
 app.post('/data1', (req, res) => {
   const data = req.body;
   console.log('Data from Board 1:', data);
-  io.emit('sensorData1', data); // Emit data to clients via socket.io
-  res.sendStatus(200); // Respond to ESP32 board with HTTP status 200
+  io.emit('sensorData1', data);
+  res.sendStatus(200);
 });
 
 // Route to handle data from ESP32 board 2
 app.post('/data2', (req, res) => {
   const data = req.body;
   console.log('Data from Board 2:', data);
-  io.emit('sensorData2', data); // Emit data to clients via socket.io
-  res.sendStatus(200); // Respond to ESP32 board with HTTP status 200
+  io.emit('sensorData2', data);
+  res.sendStatus(200);
 });
 
 // Route to get config for ESP32 board 1
