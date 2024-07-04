@@ -1,45 +1,15 @@
 const socket = io();
 
-// Recommended heart rate range (example values)
-const minHeartRate = 60;
-const maxHeartRate = 100;
-
 // Handle data from Board 1
 socket.on('sensorData1', (data) => {
   console.log('Received data from Board 1:', data);
-
-  // Update heart rate data
-  const heartRateElement = document.getElementById('heartRateData');
-  heartRateElement.innerHTML = `
+  document.getElementById('heartRateData').innerHTML = `
     <p class="sensor-data"><span class="sensor-label">Heart Rate:</span> ${data.heartRate} bpm</p>
   `;
-
-  // Check if heart rate is out of range and apply flashing red border if necessary
-  if (data.heartRate < minHeartRate || data.heartRate > maxHeartRate) {
-    heartRateElement.classList.add('flash-red');
-  } else {
-    heartRateElement.classList.remove('flash-red');
-  }
-
-  // Update flex sensor data
-  const flexSensorElement = document.getElementById('flexSensorData');
-  flexSensorElement.innerHTML = `
+  document.getElementById('flexSensorData').innerHTML = `
     <p class="sensor-data"><span class="sensor-label">Flex Sensor 1:</span> ${data.flexSensor1}</p>
     <p class="sensor-data"><span class="sensor-label">Flex Sensor 2:</span> ${data.flexSensor2}</p>
   `;
-
-  // Fetch the configured flex sensor ranges
-  fetch('/config1')
-    .then(response => response.json())
-    .then(config => {
-      // Check if any flex sensor value is out of range and apply flashing red border if necessary
-      if ((data.flexSensor1 < config.flexRange1Min || data.flexSensor1 > config.flexRange1Max) ||
-          (data.flexSensor2 < config.flexRange2Min || data.flexSensor2 > config.flexRange2Max)) {
-        flexSensorElement.classList.add('flash-red');
-      } else {
-        flexSensorElement.classList.remove('flash-red');
-      }
-    });
 });
 
 // Handle data from Board 2
@@ -62,29 +32,17 @@ socket.on('sensorData2', (data) => {
     <p class="sensor-data"><span class="sensor-label">Load Cell 8:</span> ${data.loadCellPercentages[7]}%</p>
   `;
 
-  // Calculate the position of the red line for center of gravity
+  // Calculate the position of the red line
   const totalWeight = data.leftMatWeight + data.rightMatWeight;
   const leftPercentage = (data.leftMatWeight / totalWeight) * 100;
   const rightPercentage = (data.rightMatWeight / totalWeight) * 100;
 
+  // Set the position of the red line
   const redLine = document.getElementById('redLine');
   if (totalWeight !== 0) {
-    redLine.style.left = `calc(${rightPercentage}% - 1px)`;
+    redLine.style.left = `calc(${rightPercentage}% - 1px)`; // Corrected: move to left if left mat has more weight
   } else {
-    redLine.style.left = '50%';
-  }
-
-  // Calculate the position of the weight distribution marker
-  const frontWeight = data.loadCellPercentages[1] + data.loadCellPercentages[5];
-  const rearWeight = data.loadCellPercentages[3] + data.loadCellPercentages[7];
-  const frontRearTotal = frontWeight + rearWeight;
-
-  const weightDistributionMarker = document.getElementById('weightDistributionMarker');
-  if (frontRearTotal !== 0) {
-    const frontPercentage = (frontWeight / frontRearTotal) * 100;
-    weightDistributionMarker.style.left = `calc(${100 - frontPercentage}% - 1px)`;
-  } else {
-    weightDistributionMarker.style.left = '50%';
+    redLine.style.left = '50%'; // Center it if there is no weight
   }
 });
 
