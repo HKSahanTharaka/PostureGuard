@@ -10,6 +10,9 @@ socket.on('sensorData1', (data) => {
     <p class="sensor-data"><span class="sensor-label">Flex Sensor 1:</span> ${data.flexSensor1}</p>
     <p class="sensor-data"><span class="sensor-label">Flex Sensor 2:</span> ${data.flexSensor2}</p>
   `;
+  document.getElementById('accelerationData').innerHTML = `
+    <p class="sensor-data"><span class="sensor-label">Linear Acceleration:</span> ${data.linearAcceleration.toFixed(2)} m/s²</p>
+  `;
 });
 
 // Handle data from Board 2
