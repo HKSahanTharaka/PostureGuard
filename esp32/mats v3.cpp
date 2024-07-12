@@ -30,7 +30,7 @@ const int BUZZER_PIN = 23;
 float WEIGHT_DIFFERENCE_THRESHOLD = 6.0;
 
 unsigned long previousMillis = 0;
-const long interval = 500;
+const long interval = 100;
 
 float leftMatWeight = 0;
 float rightMatWeight = 0;
@@ -80,30 +80,35 @@ void loop() {
       rightMatWeight += loadCellWeights[i];
     }
 
-    if (leftMatWeight < 0.1) {
+    if (leftMatWeight <= 2.5) {
       leftMatWeight = 0;
+      for (int i = 0; i < 4; i++) {
+        loadCellPercentages[i] = 0;
+      }
+    } else {
+      for (int i = 0; i < 4; i++) {
+        loadCellPercentages[i] = (leftMatWeight > 0) ? abs(loadCellWeights[i] / leftMatWeight * 100) : 0;
+      }
+      normalizePercentages(loadCellPercentages, 0, 4);
     }
-    if (rightMatWeight < 0.1) {
+
+    if (rightMatWeight <= 2.5) {
       rightMatWeight = 0;
+      for (int i = 4; i < 8; i++) {
+        loadCellPercentages[i] = 0;
+      }
+    } else {
+      for (int i = 4; i < 8; i++) {
+        loadCellPercentages[i] = (rightMatWeight > 0) ? abs(loadCellWeights[i] / rightMatWeight * 100) : 0;
+      }
+      normalizePercentages(loadCellPercentages, 4, 8);
     }
-
-    // Calculate and normalize weight percentages
-    for (int i = 0; i < 4; i++) {
-      loadCellPercentages[i] = (leftMatWeight > 0) ? abs(loadCellWeights[i] / leftMatWeight * 100) : 0;
-    }
-    normalizePercentages(loadCellPercentages, 0, 4);
-
-    for (int i = 4; i < 8; i++) {
-      loadCellPercentages[i] = (rightMatWeight > 0) ? abs(loadCellWeights[i] / rightMatWeight * 100) : 0;
-    }
-    normalizePercentages(loadCellPercentages, 4, 8);
 
     if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http;
       http.begin(serverName);
       http.addHeader("Content-Type", "application/json");
 
-      // Check and replace NaN values with 0
       for (int i = 0; i < NUM_LOADCELLS; i++) {
         if (isnan(loadCellPercentages[i])) {
           loadCellPercentages[i] = 0;
@@ -144,7 +149,6 @@ void loop() {
       digitalWrite(BUZZER_PIN, LOW);
     }
 
-    // Check for configuration updates
     if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http;
       http.begin(configServerName);
