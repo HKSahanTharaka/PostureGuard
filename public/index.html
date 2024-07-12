@@ -68,6 +68,14 @@
       <label>Weight Difference Threshold: <input type="number" id="weightDifferenceThreshold" step="0.1" /></label><br>
       <button id="updateBoard2ConfigBtn">Update</button>
     </div>
+
+    <h2 style="text-align: center; color: #ffffff;">Flex Sensor Average</h2>
+    <div style="text-align: center;">
+      <label>Time (seconds): <input type="number" id="flexAverageTime" min="1" step="1" /></label><br>
+      <button id="startFlexAverageBtn">Start</button>
+    <div id="flexAverageResult"></div>
+    </div>
+
   </div>
 
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>

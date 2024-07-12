@@ -73,6 +73,21 @@ io.on('connection', (socket) => {
   });
 });
 
+// Add this variable at the beginning of the file
+let flexSensorAverages = { avg1: 0, avg2: 0 };
+
+// Add this new route
+app.post('/flexAverage', (req, res) => {
+  flexSensorAverages = req.body;
+  console.log('Flex Sensor Averages:', flexSensorAverages);
+  res.sendStatus(200);
+});
+
+// Add this new route to get the latest averages
+app.get('/flexAverage', (req, res) => {
+  res.json(flexSensorAverages);
+});
+
 // Start the server
 const port = 3000;
 server.listen(port, () => {

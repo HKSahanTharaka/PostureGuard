@@ -11,7 +11,7 @@ socket.on('sensorData1', (data) => {
     <p class="sensor-data"><span class="sensor-label">Flex Sensor 2:</span> ${data.flexSensor2}</p>
   `;
   document.getElementById('accelerationData').innerHTML = `
-    <p class="sensor-data"><span class="sensor-label">Linear Acceleration:</span> ${data.linearAcceleration.toFixed(2)} m/s²</p>
+    <p class="sensor-data"><span class="sensor-label">Workout Pace:</span> ${data.linearAcceleration.toFixed(2)} m/s²</p>
   `;
 });
 
@@ -105,4 +105,57 @@ document.getElementById('updateBoard2ConfigBtn').addEventListener('click', () =>
   }).catch((error) => {
     console.error('Error updating Board 2 configuration:', error);
   });
+});
+
+// Add these variables at the beginning of the file
+let flexSensor1Values = [];
+let flexSensor2Values = [];
+let isCollectingFlexData = false;
+let flexDataCollectionStart;
+
+// Update the sensorData1 event handler
+socket.on('sensorData1', (data) => {
+  // ... (keep the existing code)
+
+  // Add this at the end of the function
+  if (isCollectingFlexData) {
+    flexSensor1Values.push(data.flexSensor1);
+    flexSensor2Values.push(data.flexSensor2);
+  }
+});
+
+// Add this new event listener at the end of the file
+document.getElementById('startFlexAverageBtn').addEventListener('click', () => {
+  const time = parseInt(document.getElementById('flexAverageTime').value);
+  if (time < 1) {
+    alert('Please enter a valid time (minimum 1 second)');
+    return;
+  }
+
+  flexSensor1Values = [];
+  flexSensor2Values = [];
+  isCollectingFlexData = true;
+  flexDataCollectionStart = Date.now();
+
+  document.getElementById('flexAverageResult').textContent = 'Collecting data...';
+
+  setTimeout(() => {
+    isCollectingFlexData = false;
+    const avg1 = flexSensor1Values.reduce((a, b) => a + b, 0) / flexSensor1Values.length;
+    const avg2 = flexSensor2Values.reduce((a, b) => a + b, 0) / flexSensor2Values.length;
+
+    document.getElementById('flexAverageResult').innerHTML = `
+      <p>Average Flex Sensor 1: ${avg1.toFixed(2)}</p>
+      <p>Average Flex Sensor 2: ${avg2.toFixed(2)}</p>
+    `;
+
+    // Send the averages to the server
+    fetch('/flexAverage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ avg1, avg2 })
+    });
+  }, time * 1000);
 });
