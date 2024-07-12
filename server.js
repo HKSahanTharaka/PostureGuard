@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
@@ -7,8 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.json()); // Replace bodyParser with express.json()
-
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 let board1Config = {
@@ -71,35 +71,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
-});
-
-let flex1Values = [];
-let flex2Values = [];
-
-// Route to start a timer for collecting flex sensor data
-app.post('/startTimer', (req, res) => {
-  const { time } = req.body; // time in minutes
-  flex1Values = [];
-  flex2Values = [];
-
-  const duration = time * 60 * 1000; // convert minutes to milliseconds
-
-  setTimeout(() => {
-    const avgFlex1 = flex1Values.reduce((a, b) => a + b, 0) / flex1Values.length;
-    const avgFlex2 = flex2Values.reduce((a, b) => a + b, 0) / flex2Values.length;
-    res.json({ avgFlex1, avgFlex2 }); // Send response after timeout
-  }, duration);
-
-  // Send response immediately
-  res.send('Timer started');
-});
-
-// Route to receive flex sensor data
-app.post('/flexSensorData', (req, res) => {
-  const { flex1, flex2 } = req.body;
-  flex1Values.push(flex1);
-  flex2Values.push(flex2);
-  res.send('Data received');
 });
 
 // Start the server

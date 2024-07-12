@@ -11,6 +11,7 @@
     <h1>Welcome to PostureGuard</h1>
     <button class="notable-btn" onclick="window.location.href='instructions.html'">Instructions</button>
 
+    
     <h2>Vest System Data</h2>
     <div class="flex-container">
       <div class="flex-item">
@@ -19,16 +20,7 @@
       </div>
       <div class="flex-item">
         <h3>Flex Sensor 1 & 2</h3>
-        <div id="flexSensorInput" style="text-align: center;">
-          <label for="time">Enter time in minutes:</label>
-          <input type="number" id="time" name="time" style="margin-left: 5px;">
-          <button onclick="startTimer()">Start Timer</button>
-        </div>        
         <div id="flexSensorData"></div>
-        <div>
-          <p>Average Flex Sensor 1 Value: <span id="avgFlex1">0</span></p>
-          <p>Average Flex Sensor 2 Value: <span id="avgFlex2">0</span></p>
-        </div>
       </div>
       <div class="flex-item">
         <h3>Body Acceleration</h3>
@@ -37,9 +29,11 @@
     </div>
 
     <h2>Mats System Data</h2>
+
     <div class="image-container">
       <img src="images/mats.png" alt="mats">
     </div>
+
     
     <div class="flex-container">
       <div class="flex-item">
@@ -62,16 +56,16 @@
 
     <h2 style="text-align: center; color: #ffffff;">Vest System Configuration</h2>
     <div style="text-align: center;">
-      <label for="flexRange1Min">Flex Range 1 Min: </label><input type="number" id="flexRange1Min"><br>
-      <label for="flexRange1Max">Flex Range 1 Max: </label><input type="number" id="flexRange1Max"><br>
-      <label for="flexRange2Min">Flex Range 2 Min: </label><input type="number" id="flexRange2Min"><br>
-      <label for="flexRange2Max">Flex Range 2 Max: </label><input type="number" id="flexRange2Max"><br>
+      <label>Flex Range 1 Min: <input type="number" id="flexRange1Min" /></label><br>
+      <label>Flex Range 1 Max: <input type="number" id="flexRange1Max" /></label><br>
+      <label>Flex Range 2 Min: <input type="number" id="flexRange2Min" /></label><br>
+      <label>Flex Range 2 Max: <input type="number" id="flexRange2Max" /></label><br>
       <button id="updateBoard1ConfigBtn">Update</button>
     </div>
 
     <h2 style="text-align: center; color: #ffffff;">Mats System Configuration</h2>
     <div style="text-align: center;">
-      <label for="weightDifferenceThreshold">Weight Difference Threshold: </label><input type="number" id="weightDifferenceThreshold" step="0.1"><br>
+      <label>Weight Difference Threshold: <input type="number" id="weightDifferenceThreshold" step="0.1" /></label><br>
       <button id="updateBoard2ConfigBtn">Update</button>
     </div>
   </div>

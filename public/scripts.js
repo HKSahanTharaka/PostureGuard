@@ -57,84 +57,52 @@ fetch('/config1')
     document.getElementById('flexRange1Max').value = config.flexRange1Max;
     document.getElementById('flexRange2Min').value = config.flexRange2Min;
     document.getElementById('flexRange2Max').value = config.flexRange2Max;
-  })
-  .catch(error => console.error('Error fetching Board 1 configuration:', error));
+  });
 
 // Fetch initial configuration for Board 2
 fetch('/config2')
   .then(response => response.json())
   .then(config => {
     document.getElementById('weightDifferenceThreshold').value = config.weightDifferenceThreshold;
-  })
-  .catch(error => console.error('Error fetching Board 2 configuration:', error));
+  });
 
 // Function to update configuration for Board 1
 document.getElementById('updateBoard1ConfigBtn').addEventListener('click', () => {
   const config = {
-    flexRange1Min: document.getElementById('flexRange1Min').value,
-    flexRange1Max: document.getElementById('flexRange1Max').value,
-    flexRange2Min: document.getElementById('flexRange2Min').value,
-    flexRange2Max: document.getElementById('flexRange2Max').value,
+    flexRange1Min: parseInt(document.getElementById('flexRange1Min').value),
+    flexRange1Max: parseInt(document.getElementById('flexRange1Max').value),
+    flexRange2Min: parseInt(document.getElementById('flexRange2Min').value),
+    flexRange2Max: parseInt(document.getElementById('flexRange2Max').value)
   };
 
   fetch('/config1', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(config),
-  })
-    .then(response => response.json())
-    .then(data => console.log('Board 1 configuration updated:', data))
-    .catch(error => console.error('Error updating Board 1 configuration:', error));
+    body: JSON.stringify(config)
+  }).then(() => {
+    alert('Board 1 Configuration Updated Successfully');
+  }).catch((error) => {
+    console.error('Error updating Board 1 configuration:', error);
+  });
 });
 
 // Function to update configuration for Board 2
 document.getElementById('updateBoard2ConfigBtn').addEventListener('click', () => {
   const config = {
-    weightDifferenceThreshold: document.getElementById('weightDifferenceThreshold').value,
+    weightDifferenceThreshold: parseFloat(document.getElementById('weightDifferenceThreshold').value)
   };
 
   fetch('/config2', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(config),
-  })
-    .then(response => response.json())
-    .then(data => console.log('Board 2 configuration updated:', data))
-    .catch(error => console.error('Error updating Board 2 configuration:', error));
-});
-
-let timer;
-let elapsedTime = 0;
-let flexSensor1Values = [];
-let flexSensor2Values = [];
-
-function startTimer() {
-  const minutes = document.getElementById('time').value;
-  const milliseconds = minutes * 60 * 1000;
-
-  clearInterval(timer);
-  elapsedTime = 0;
-  flexSensor1Values = [];
-  flexSensor2Values = [];
-
-  timer = setInterval(() => {
-    elapsedTime += 1000;
-    if (elapsedTime >= milliseconds) {
-      clearInterval(timer);
-      const avgFlexSensor1 = (flexSensor1Values.reduce((a, b) => a + b, 0) / flexSensor1Values.length) || 0;
-      const avgFlexSensor2 = (flexSensor2Values.reduce((a, b) => a + b, 0) / flexSensor2Values.length) || 0;
-      document.getElementById('avgFlex1').textContent = avgFlexSensor1.toFixed(2);
-      document.getElementById('avgFlex2').textContent = avgFlexSensor2.toFixed(2);
-    }
-  }, 1000);
-}
-
-// Update sensor data values for averaging
-socket.on('sensorData1', (data) => {
-  flexSensor1Values.push(data.flexSensor1);
-  flexSensor2Values.push(data.flexSensor2);
+    body: JSON.stringify(config)
+  }).then(() => {
+    alert('Board 2 Configuration Updated Successfully');
+  }).catch((error) => {
+    console.error('Error updating Board 2 configuration:', error);
+  });
 });
