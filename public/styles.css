@@ -148,3 +148,12 @@ button:hover {
   height: auto;
   border-radius: 8px;
 }
+
+#flexSensorInput {
+  text-align: center; /* Center align text within the div */
+  margin-bottom: 10px; /* Add some space below */
+}
+
+#flexSensorInput input {
+  margin-left: 5px; /* Add some space between the label and input */
+}
